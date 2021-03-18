@@ -406,6 +406,7 @@ for y in os.listdir(datapath):
         # print("Angle de la droite est " , angle)
         except:
             pass
+        
         x=np.linspace(0,img_coeur.shape[0],1000)
         # print (ConditionA,"conditionA",ConditionB,"conditionB")
         

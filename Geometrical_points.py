@@ -9,7 +9,7 @@ Created on Thu Mar 18 15:41:40 2021
 import numpy as np 
 from iteration_utilities import duplicates
 from iteration_utilities import unique_everseen
-
+from math import acos, degrees, isnan
 
 class Geometrical_points:
     def __init__(self,Name):
@@ -44,7 +44,7 @@ class Geometrical_points:
         
         return mini , maxi , slice_barycenter
     
-    def volume(img_coeur,img_sein):
+    def volume(self, img_coeur,img_sein):
     
         if img_sein.shape == img_coeur.shape:
             
@@ -54,7 +54,7 @@ class Geometrical_points:
         
         return volume_voxel
     
-    def compare_imgs(img_coeur,img_sein,position_coeur,position_sein,z):
+    def compare_imgs(self, img_coeur,img_sein,position_coeur,position_sein,z):
     
         if img_sein.shape == img_coeur.shape:
             position_coeur_slice_z=[]
@@ -72,18 +72,18 @@ class Geometrical_points:
                     
             return position_coeur_slice_z,position_sein_slice_z
     
-    def droite_directrice(Xa,Ya,Xb,Yb):
+    def droite_directrice(self,Xa,Ya,Xb,Yb):
         m=(Yb-Ya)/(Xb-Xa)
         p=Ya-m*Xa
         return m,p
     
     
-    def point_au_dessus_droite(x,y,m,p):
+    def point_au_dessus_droite(self,x,y,m,p):
 
         return(y-(m*x+p)>0)
     
 
-    def Verification_barycentre_table(x_barycenter,y_barycenter,List_Couch_x_slice_barycenter,List_Couch_y_slice_barycenter,size):
+    def Verification_barycentre_table(self,x_barycenter,y_barycenter,List_Couch_x_slice_barycenter,List_Couch_y_slice_barycenter,size):
         xmin=min(List_Couch_x_slice_barycenter)
         ymin=min(List_Couch_y_slice_barycenter)
         ymax=max(List_Couch_y_slice_barycenter)
@@ -102,3 +102,22 @@ class Geometrical_points:
             return x_barycenter,y_barycenter
         else:
             return x_barycenter,y_barycenter
+    
+    
+    def Select_Slice_And_Define_Anlge(self, img_coeur, img_sein, position_coeur, position_sein, z, count_pixel, OFFSET_cm, List_angle ):
+        
+        position_coeur_slice_z,position_sein_slice_z = self.compare_imgs(img_coeur,img_sein,position_coeur,position_sein,z)
+    
+        count_pixel=count_pixel + len(position_coeur_slice_z)
+        
+        ConditionA,Xa,Ya=self.trouver_point(position_sein_slice_z,'A',OFFSET_cm)
+        ConditionB,Xb,Yb=self.trouver_point(position_sein_slice_z,'B',OFFSET_cm)
+        
+        try:
+            cosangle=np.abs(Xb-Xa)/np.sqrt(np.abs(Ya-Yb)**2+np.abs(Xb-Xa)**2)
+            angle= 270 + degrees(acos(cosangle))
+            List_angle.append(angle)
+        # print("Angle de la droite est " , angle)
+        except:
+            pass
+        return List_angle, 
