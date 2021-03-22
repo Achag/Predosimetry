@@ -12,15 +12,20 @@ from Geometrical_points import Geometrical_points
 from Plot import Plot
 from math import  isnan
 
-################################### Initialise this variables #####################################
+t0=time.time()
+
+################################### Initialise this variables ###########################################
 OFFSET_cm=0.5
 datapath="C:/Temp/Not_For_Deep_Learning"
 List_ROI=["Coeur","Sein G","Carbon Fiber","Paroi G","External"]
 #########################################################################################################
+
+# Take into account the difference of Name 
 List_Of_ROI=[]
 for i in List_ROI:
     List_Of_ROI.append(i.replace(" ","-"))
 print(List_Of_ROI)
+
 
 importer=Import(datapath,List_Of_ROI)
 
@@ -28,6 +33,8 @@ importer=Import(datapath,List_Of_ROI)
 
 List_Patient=importer.list_patient_path()
 print(List_Patient)
+
+#Loop on all patients
 for y in List_Patient:
     t1=time.time()
     print('\n')
@@ -53,6 +60,7 @@ for y in List_Patient:
     count=0
     count_pixel=0
     
+#Loop on each slices
     for z in range (mini, maxi, 1):
         List_coeur_x , List_coeur_y , List_sein_x , List_sein_y , List_point = [] , [] , [] , [] , []   
         
@@ -62,7 +70,7 @@ for y in List_Patient:
         
         x=np.linspace(0,img_coeur.shape[0],1000)
         
-        
+#Check number of points in the slice and return False if Breast is not present        
         if ConditionA == True and ConditionB==True:
             
             m,p=Geometric.droite_directrice(Xa, Ya, Xb, Yb)
@@ -79,23 +87,23 @@ for y in List_Patient:
                 
     List_angle=[x for x in List_angle if isnan(x) == False]            
                 
-###################################################### PLOT #################################################################################################################          
+###################################################### Display plot #################################################################################################################          
             # Plotter=Plot(List_coeur_x,List_coeur_y,List_sein_x,List_sein_y,x,y,z,m,p,slice_barycenter,List_Couch_x_slice_barycenter,List_Couch_y_slice_barycenter,position_CouchSurface)
             
             # Plotter.plot(Geometric.f,Geometric.Anneau_and_Couch,Geometric.size,Geometric.Verification_barycentre_table,img_coeur,img_sein)
 #########################################################################################################################################################################################
 
-############################### To have volume intersecting from minimal slice to current slice ##############################################################
+############################### Display volume intersecting from minimal slice to current slice ##############################################################
  
            # print ("Le volume intersecté depuis la Slice " , mini+1 , "à ", z-1, "est : ", count * volume_voxel, "cm3")
            # print ("Le volume intersecté depuis la Slice " , mini+1 , "à ", z-1, "est : ", count * volume_voxel, "cm3")
 
 ##############################################################################################################################################################
 
-#################################### Information posted for each patient ######################################################################################    
+#################################### Information display for each patient ######################################################################################    
     t2=time.time()
     print('\n')
-    print ("Total volume intersecting tangential line shifted from:  ", count*volume_voxel , "cm3")
+    print ("Total volume intersecting tangential line shifted from:  ", OFFSET_cm,"is" ,  count*volume_voxel , "cm3")
     # print("\n")   
     # print("Le volume de coeur pour vérifier est : ",count_pixel*volume_voxel)
     print("\n")
@@ -104,4 +112,5 @@ for y in List_Patient:
     print("Done for patient Id n°" , y , 'in',t2-t1, "  secondes")
 ####################################################################################################################################################
 
-print("Done")
+t3=time.time()
+print("All patient data are displayed in :", t3-t0, "secondes")
